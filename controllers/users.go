@@ -20,7 +20,6 @@ import (
 // @Produce json
 // @Param search query string false "Search by name"
 // @Success 200 {string} string "string"
-// @Security Token
 // @Router /users [get]
 func GetAllUsers(ctx *gin.Context) { 
 	queryName := ctx.DefaultQuery("search", "")
@@ -149,6 +148,7 @@ func UpdateUser(ctx *gin.Context) {
 // @Param user body m.DeleteUserType true "Delete User"
 // @Success 204
 // @Failure 404 {object} map[string]interface{}
+// @Security Token
 // @Router /users [delete]
 func DeleteUser(ctx *gin.Context) {
 	var req m.DeleteUserType
