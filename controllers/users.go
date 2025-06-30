@@ -20,6 +20,7 @@ import (
 // @Produce json
 // @Param search query string false "Search by name"
 // @Success 200 {string} string "string"
+// @Security Token
 // @Router /users [get]
 func GetAllUsers(ctx *gin.Context) { 
 	queryName := ctx.DefaultQuery("search", "")

@@ -79,6 +79,8 @@ paths:
           description: string
           schema:
             type: string
+      security:
+      - Token: []
       summary: List all users
       tags:
       - users

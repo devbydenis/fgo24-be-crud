@@ -17,6 +17,11 @@ const docTemplate = `{
     "paths": {
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
                 "description": "list all users",
                 "consumes": [
                     "application/json"
