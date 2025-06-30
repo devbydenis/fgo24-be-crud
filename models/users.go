@@ -20,7 +20,7 @@ type User struct {
 
 type users []User
 
-func FindAllUser() []User {
+func FindAllUser(query string) []User {
 	// connect ke db dulu
 	conn, err := u.ConnectDB()
 	if err != nil {
@@ -34,8 +34,10 @@ func FindAllUser() []User {
 	rows, err := conn.Query(
 		context.Background(),
 		`
-			SELECT id, name, email, password FROM users;
+			SELECT id, name, email, password, created_at, updated_at FROM users
+			WHERE name = $1
 		`,
+		query,
 	)
 	if err != nil {
 		fmt.Println("failed to query rows:", err)

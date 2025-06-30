@@ -10,6 +10,10 @@ import (
 // @version         1.0
 // @description     This is a sample server celler server.
 // @BasePath         /
+
+// @SecurityDefinitions.ApiKey  Token
+// @in header
+// @name Authorization
 func main() {
 	r := gin.Default()
 

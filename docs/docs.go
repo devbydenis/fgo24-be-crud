@@ -27,6 +27,14 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search by name",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "string",
@@ -39,6 +47,11 @@ const docTemplate = `{
         },
         "/users/{id}": {
             "get": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
                 "description": "list all users",
                 "consumes": [
                     "application/json"
@@ -67,6 +80,13 @@ const docTemplate = `{
                     }
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "Token": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

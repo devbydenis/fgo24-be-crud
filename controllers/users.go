@@ -17,10 +17,13 @@ import (
 // @Tags users
 // @Accept json
 // @Produce json
+// @Param search query string false "Search by name"
 // @Success 200 {string} string "string"
 // @Router /users [get]
 func GetAllUsers(ctx *gin.Context) { 
-	users := m.FindAllUser()
+	queryName := ctx.DefaultQuery("search", "")
+	
+	users := m.FindAllUser(queryName)
 	
 
 	if len(users) == 0 {
@@ -40,12 +43,13 @@ func GetAllUsers(ctx *gin.Context) {
 	})
 }
 
-// @Description list all users
+// @Description detail all users
 // @Tags users
 // @Accept json
 // @Produce json
 // @Param id path int true "User ID"
 // @Success 200 {string} string "string"
+// @Security Token
 // @Router /users/{id} [get]
 func GetUserById(ctx *gin.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))
@@ -60,7 +64,7 @@ func GetUserById(ctx *gin.Context) {
 
 func CreateUser(ctx *gin.Context) {
 	var req m.User
-	currUsers := m.FindAllUser()
+	currUsers := m.FindAllUser("")
 
 	err :=ctx.ShouldBind(&req)
 	if err != nil {
