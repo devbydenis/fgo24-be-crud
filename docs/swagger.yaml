@@ -18,9 +18,18 @@ definitions:
       success:
         type: boolean
     type: object
+  models.UpdateUserType:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
 info:
   contact: {}
-  description: This is a sample server celler server.
+  description: This is a collection of CRUD API.
   title: fgo24-be-crud
   version: "1.0"
 paths:
@@ -41,6 +50,45 @@ paths:
           description: string
           schema:
             type: string
+      summary: List all users
+      tags:
+      - users
+    patch:
+      consumes:
+      - application/json
+      description: Update user details by user ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateUserType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UpdateUserType'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Token: []
+      summary: Update user details
       tags:
       - users
     post:
@@ -67,6 +115,7 @@ paths:
             $ref: '#/definitions/models.Response'
       security:
       - Token: []
+      summary: Create a new user
       tags:
       - users
   /users/{id}:
@@ -89,6 +138,7 @@ paths:
             type: string
       security:
       - Token: []
+      summary: Detail all users
       tags:
       - users
 securityDefinitions:

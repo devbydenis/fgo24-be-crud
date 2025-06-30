@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a sample server celler server.",
+        "description": "This is a collection of CRUD API.",
         "title": "fgo24-be-crud",
         "contact": {},
         "version": "1.0"
@@ -20,6 +20,7 @@
                 "tags": [
                     "users"
                 ],
+                "summary": "List all users",
                 "parameters": [
                     {
                         "type": "string",
@@ -53,6 +54,7 @@
                 "tags": [
                     "users"
                 ],
+                "summary": "Create a new user",
                 "parameters": [
                     {
                         "description": "Request create user",
@@ -78,6 +80,64 @@
                         }
                     }
                 }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "Update user details by user ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update user details",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update user",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateUserType"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateUserType"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
             }
         },
         "/users/{id}": {
@@ -97,6 +157,7 @@
                 "tags": [
                     "users"
                 ],
+                "summary": "Detail all users",
                 "parameters": [
                     {
                         "type": "integer",
@@ -142,6 +203,20 @@
                 "results": {},
                 "success": {
                     "type": "boolean"
+                }
+            }
+        },
+        "models.UpdateUserType": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         }

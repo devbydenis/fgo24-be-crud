@@ -13,6 +13,7 @@ import (
 	// "github.com/jackc/pgx/v5"
 )
 
+// @summary List all users
 // @Description list all users
 // @Tags users
 // @Accept json
@@ -43,6 +44,7 @@ func GetAllUsers(ctx *gin.Context) {
 	})
 }
 
+// @summary Detail all users
 // @Description detail all users
 // @Tags users
 // @Accept json
@@ -62,6 +64,7 @@ func GetUserById(ctx *gin.Context) {
 	})
 }
 
+// @summary Create a new user
 // @Description Create a new user with the input payload
 // @Tags users
 // @Accept json
@@ -100,28 +103,35 @@ func CreateUser(ctx *gin.Context) {
 	})
 }
 
+// @summary Update user details
+// @Description Update user details by user ID
+// @Tags users
+// @Accept  json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param user body m.UpdateUserType true "Update user"
+// @Success 200 {object} m.UpdateUserType
+// @Failure 400 {object} map[string]interface{}
+// @Failure 404 {object} map[string]interface{}
+// @Security Token
+// @Router /users [patch]
 func UpdateUser(ctx *gin.Context) {
-	var req m.User
-	id, err := strconv.Atoi(ctx.Param("id"))
+	var req m.UpdateUserType
+
+	err := ctx.ShouldBind(&req)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"message": "failed to convert id to int",
-			"error": err,
+		ctx.JSON(http.StatusInternalServerError, m.Response{
+			Success: false,
+			Message: "failed to bind json",
+			Errors:  err,
 		})
 		return
 	}
 
-	err = ctx.ShouldBind(&req)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"message": "failed to bind json",
-			"error": err,
-		})
-		return
-	}
-
-	fmt.Println(req, id)
-	m.UpdateUser(&req, id)
+	fmt.Println("id: ", req.ID)
+	fmt.Println("email: ", req.Email)
+	fmt.Println("name: ", req.Name)
+	m.UpdateUser(&req)
 
 	// update kalo sukses
 	ctx.JSON(http.StatusOK, gin.H{

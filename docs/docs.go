@@ -27,6 +27,7 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
+                "summary": "List all users",
                 "parameters": [
                     {
                         "type": "string",
@@ -60,6 +61,7 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
+                "summary": "Create a new user",
                 "parameters": [
                     {
                         "description": "Request create user",
@@ -85,6 +87,64 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "Update user details by user ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update user details",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update user",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateUserType"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateUserType"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
             }
         },
         "/users/{id}": {
@@ -104,6 +164,7 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
+                "summary": "Detail all users",
                 "parameters": [
                     {
                         "type": "integer",
@@ -151,6 +212,20 @@ const docTemplate = `{
                     "type": "boolean"
                 }
             }
+        },
+        "models.UpdateUserType": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
         }
     },
     "securityDefinitions": {
@@ -169,7 +244,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "fgo24-be-crud",
-	Description:      "This is a sample server celler server.",
+	Description:      "This is a collection of CRUD API.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

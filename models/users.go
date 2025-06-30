@@ -26,6 +26,12 @@ type CreateUser struct {
 	Password string `json:"password"`
 }
 
+type UpdateUserType struct {
+	ID int `json:"id"`
+	Name string `json:"name"`
+	Email string `json:"email"`
+}
+
 func FindAllUser(query string) []User {
 	// connect ke db dulu
 	conn, err := u.ConnectDB()
@@ -117,7 +123,7 @@ func AddingNewUSer(user CreateUser) {
 	}
 }
 
-func UpdateUser(user *User, id int) {
+func UpdateUser(user *UpdateUserType) {
 	// connect ke db dulu
 	conn, err := u.ConnectDB()
 	if err != nil {
@@ -127,17 +133,30 @@ func UpdateUser(user *User, id int) {
 		conn.Conn().Close(context.Background())
 	}()
 
+	queryChangeName := `
+	UPDATE users 
+	SET name = $1, updated_at = NOW() 
+	WHERE id = $2
+	`
+	queryChangeEmail := `
+	UPDATE users 
+	SET email = $1, updated_at = NOW() 
+	WHERE id = $2
+	`
+
 	// get row of database
-	query := `
-		UPDATE users 
-		SET name = $1, email = $2, updated_at = NOW() 
-		WHERE id = $3 
-		RETURNING id, name, email, created_at, updated_at`
-
-	_, err = conn.Exec(context.Background(), query, user.Name, user.Email, id)
-
+	if user.Name == "" {
+		_, err = conn.Exec(context.Background(), queryChangeEmail, user.Email, user.ID)
+		if err != nil {
+			fmt.Println("failed to update row with column email:", err)
+		}
+		return
+	}
+	_, err = conn.Exec(context.Background(), queryChangeName, user.Name, user.ID)
+	
+	
 	if err != nil {
-		fmt.Println("failed to update row:", err)
+		fmt.Println("failed to update row with column name:", err)
 	}
 
 }

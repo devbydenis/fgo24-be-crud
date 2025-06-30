@@ -8,7 +8,7 @@ import (
 )
 // @title           fgo24-be-crud
 // @version         1.0
-// @description     This is a sample server celler server.
+// @description     This is a collection of CRUD API.
 // @BasePath         /
 
 // @SecurityDefinitions.ApiKey  Token
