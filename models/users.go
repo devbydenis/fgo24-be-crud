@@ -32,6 +32,10 @@ type UpdateUserType struct {
 	Email string `json:"email"`
 }
 
+type DeleteUserType struct {
+	ID int `json:"id"`
+}
+
 func FindAllUser(query string) []User {
 	// connect ke db dulu
 	conn, err := u.ConnectDB()
@@ -159,4 +163,27 @@ func UpdateUser(user *UpdateUserType) {
 		fmt.Println("failed to update row with column name:", err)
 	}
 
+}
+
+func DeleteUser(id int) {
+	// connect ke db dulu
+	conn, err := u.ConnectDB()
+	if err != nil {
+		fmt.Println("failed to connect to database", err)
+	}
+	defer func(){
+		conn.Conn().Close(context.Background())
+	}()
+
+	// get row of database
+	_, err = conn.Exec(
+		context.Background(),
+		`
+			DELETE FROM users WHERE id = $1
+		`,
+		id,
+	)
+	if err != nil {
+		fmt.Println("failed to delete row:", err)
+	}
 }

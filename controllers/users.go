@@ -139,3 +139,33 @@ func UpdateUser(ctx *gin.Context) {
 		"result": req,
 	})
 }
+
+// @Summary Delete a user
+// @Description Delete user by user ID
+// @Tags users
+// @Accept  json
+// @Produce json
+// @Param user body m.DeleteUserType true "Delete User"
+// @Success 204
+// @Failure 404 {object} map[string]interface{}
+// @Router /users [delete]
+func DeleteUser(ctx *gin.Context) {
+	var req m.DeleteUserType
+
+	err := ctx.ShouldBind(&req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, m.Response{
+			Success: false,
+			Message: "failed to bind json",
+			Errors:  err,
+		})
+		return
+	}
+
+	m.DeleteUser(req.ID)
+	ctx.JSON(http.StatusOK, m.Response{
+		Success: true,
+		Message: "success delete user",
+	})
+
+}

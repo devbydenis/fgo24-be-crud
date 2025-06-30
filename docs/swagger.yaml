@@ -9,6 +9,11 @@ definitions:
       password:
         type: string
     type: object
+  models.DeleteUserType:
+    properties:
+      id:
+        type: integer
+    type: object
   models.Response:
     properties:
       errors: {}
@@ -34,6 +39,30 @@ info:
   version: "1.0"
 paths:
   /users:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user by user ID
+      parameters:
+      - description: Delete User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.DeleteUserType'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete a user
+      tags:
+      - users
     get:
       consumes:
       - application/json
