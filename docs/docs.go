@@ -43,6 +43,48 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
+                "description": "Create a new user with the input payload",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "parameters": [
+                    {
+                        "description": "Request create user",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateUser"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    }
+                }
             }
         },
         "/users/{id}": {
@@ -52,7 +94,7 @@ const docTemplate = `{
                         "Token": []
                     }
                 ],
-                "description": "list all users",
+                "description": "detail all users",
                 "consumes": [
                     "application/json"
                 ],
@@ -78,6 +120,35 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.CreateUser": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Response": {
+            "type": "object",
+            "properties": {
+                "errors": {},
+                "message": {
+                    "type": "string"
+                },
+                "results": {},
+                "success": {
+                    "type": "boolean"
                 }
             }
         }

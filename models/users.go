@@ -14,11 +14,17 @@ type User struct {
 	Name 			string		`json:"name"`
 	Email 		string		`json:"email"`
 	Password	string		`json:"password"`
-	CreatedAt *time.Time	`json:"created_at"`
-	UpdatedAt *time.Time	`json:"updated_at"`
+	CreatedAt *time.Time	`json:"created_at,omitempty"`
+	UpdatedAt *time.Time	`json:"updated_at,omitempty"`
 }
 
 type users []User
+
+type CreateUser struct {
+	Name string `json:"name"`
+	Email string `json:"email"`
+	Password string `json:"password"`
+}
 
 func FindAllUser(query string) []User {
 	// connect ke db dulu
@@ -85,7 +91,7 @@ func FindUserById(id int) User {
 	return user
 }
 
-func AddingNewUSer(user User) {
+func AddingNewUSer(user CreateUser) {
 	// connect ke db dulu
 	conn, err := u.ConnectDB()
 	if err != nil {

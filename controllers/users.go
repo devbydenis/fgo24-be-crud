@@ -62,28 +62,37 @@ func GetUserById(ctx *gin.Context) {
 	})
 }
 
+// @Description Create a new user with the input payload
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param user body m.CreateUser true "Request create user"
+// @Success 201 {object} m.CreateUser
+// @Failure 400 {object} m.Response{Success bool, Message string, Errors any}
+// @Security Token
+// @Router /users [post]
 func CreateUser(ctx *gin.Context) {
-	var req m.User
-	currUsers := m.FindAllUser("")
-
+	var req m.CreateUser
+	
 	err :=ctx.ShouldBind(&req)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"message": "failed to bind json",
-			"error": err,
+		ctx.JSON(http.StatusInternalServerError, m.Response{
+			Success: false,
+			Message: "failed to bind json",
+			Errors:  err,
 		})
 		return
 	}
 
-	for _, user := range currUsers {
-		if user.Email == req.Email {
-			ctx.JSON(http.StatusInternalServerError, gin.H{
-				"message": "email already exist",
-			})
-			return
-		}
+	currUsers := m.FindAllUser(req.Name)
+	if len(currUsers) > 0 {
+		ctx.JSON(http.StatusInternalServerError, m.Response{
+			Success: false,
+			Message: "Email already exists",
+		})
+		return
 	}
-
+	
 	m.AddingNewUSer(req)
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "success create new user",
