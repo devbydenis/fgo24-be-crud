@@ -6,7 +6,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-
+// @title           fgo24-be-crud
+// @version         1.0
+// @description     This is a sample server celler server.
+// @BasePath         /
 func main() {
 	r := gin.Default()
 
@@ -18,5 +21,5 @@ func main() {
 
 	routers.CombineRouters(r)
 
-	r.Run(":8888")
+	r.Run(":8800")
 }

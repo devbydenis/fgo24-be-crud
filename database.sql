@@ -2,7 +2,9 @@ CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   name VARCHAR(100),
   email VARCHAR(100),
-  password VARCHAR(100)
+  password VARCHAR(100),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP
 );
 
 INSERT INTO users (name, email, password) VALUES 
@@ -16,3 +18,8 @@ INSERT INTO users (name, email, password) VALUES
 ('prabroro', 'QH6kW@example.com', 'password456'),
 ('Johnson', 'QH6kW@example.com', 'password789'),
 ('Jones', 'QH6kW@example.com', 'password123');
+
+
+INSERT INTO users (name, email, password) VALUES
+('Rojali', 'rojali@example.com', 'password456');
+SELECT * FROM users
