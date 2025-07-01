@@ -3,6 +3,7 @@ package models
 import (
 	u "be_crud/utils"
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -10,25 +11,25 @@ import (
 )
 
 type User struct {
-	ID   			int				`json:"id"`
-	Name 			string		`json:"name"`
-	Email 		string		`json:"email"`
-	Password	string		`json:"password"`
-	CreatedAt *time.Time	`json:"created_at,omitempty"`
-	UpdatedAt *time.Time	`json:"updated_at,omitempty"`
+	ID        int        `json:"id"`
+	Name      string     `json:"name"`
+	Email     string     `json:"email"`
+	Password  string     `json:"password"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }
 
 type users []User
 
 type CreateUser struct {
-	Name string `json:"name"`
-	Email string `json:"email"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
 type UpdateUserType struct {
-	ID int `json:"id"`
-	Name string `json:"name"`
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
 	Email string `json:"email"`
 }
 
@@ -36,13 +37,13 @@ type DeleteUserType struct {
 	ID int `json:"id"`
 }
 
-func FindAllUser(query string) []User {
+func QueryingAllUser(query string) []User {
 	// connect ke db dulu
 	conn, err := u.ConnectDB()
 	if err != nil {
 		fmt.Println("failed to connect to database", err)
 	}
-	defer func(){
+	defer func() {
 		conn.Conn().Close(context.Background())
 	}()
 
@@ -50,10 +51,9 @@ func FindAllUser(query string) []User {
 	rows, err := conn.Query(
 		context.Background(),
 		`
-			SELECT id, name, email, password, created_at, updated_at FROM users
-			WHERE name = $1
-		`,
-		query,
+				SELECT * FROM users WHERE name ILIKE $1
+			`,
+		fmt.Sprintf("%%%s%%", query),
 	)
 	if err != nil {
 		fmt.Println("failed to query rows:", err)
@@ -69,13 +69,42 @@ func FindAllUser(query string) []User {
 	return users
 }
 
+func FindAllUser(query string) []User {
+	redisClient := u.RedisConnect()
+	result := redisClient.Exists(context.Background(), "users")
+	if query == "" {
+		if result.Val() == 0 {
+			users := QueryingAllUser(query)
+			encoded, err := json.Marshal(users)
+			if err != nil {
+				fmt.Println("failed to marshal json:", err)
+			}
+
+			redisClient.Set(context.Background(), "users", string(encoded), 0)
+			return users
+		} else {
+			data := redisClient.Get(context.Background(), "users")
+			str := data.Val()
+			users := []User{}
+
+			err := json.Unmarshal([]byte(str), &users)
+			if err != nil {
+				fmt.Println("failed to unmarshal json:", err)
+			}
+
+			return users
+		}
+	}
+	return QueryingAllUser(query)
+}
+
 func FindUserById(id int) User {
 	// connect ke db dulu
 	conn, err := u.ConnectDB()
 	if err != nil {
 		fmt.Println("failed to connect to database", err)
 	}
-	defer func(){
+	defer func() {
 		conn.Conn().Close(context.Background())
 	}()
 
@@ -107,7 +136,7 @@ func AddingNewUSer(user CreateUser) {
 	if err != nil {
 		fmt.Println("failed to connect to database", err)
 	}
-	defer func(){
+	defer func() {
 		conn.Conn().Close(context.Background())
 	}()
 
@@ -133,7 +162,7 @@ func UpdateUser(user *UpdateUserType) {
 	if err != nil {
 		fmt.Println("failed to connect to database", err)
 	}
-	defer func(){
+	defer func() {
 		conn.Conn().Close(context.Background())
 	}()
 
@@ -157,8 +186,7 @@ func UpdateUser(user *UpdateUserType) {
 		return
 	}
 	_, err = conn.Exec(context.Background(), queryChangeName, user.Name, user.ID)
-	
-	
+
 	if err != nil {
 		fmt.Println("failed to update row with column name:", err)
 	}
@@ -171,7 +199,7 @@ func DeleteUser(id int) {
 	if err != nil {
 		fmt.Println("failed to connect to database", err)
 	}
-	defer func(){
+	defer func() {
 		conn.Conn().Close(context.Background())
 	}()
 

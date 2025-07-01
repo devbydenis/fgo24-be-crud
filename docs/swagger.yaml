@@ -60,6 +60,8 @@ paths:
           schema:
             additionalProperties: true
             type: object
+      security:
+      - Token: []
       summary: Delete a user
       tags:
       - users
@@ -79,8 +81,6 @@ paths:
           description: string
           schema:
             type: string
-      security:
-      - Token: []
       summary: List all users
       tags:
       - users

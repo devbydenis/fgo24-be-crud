@@ -10,11 +10,6 @@
     "paths": {
         "/users": {
             "get": {
-                "security": [
-                    {
-                        "Token": []
-                    }
-                ],
                 "description": "list all users",
                 "consumes": [
                     "application/json"
@@ -87,6 +82,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
                 "description": "Delete user by user ID",
                 "consumes": [
                     "application/json"

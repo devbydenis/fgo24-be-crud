@@ -26,13 +26,10 @@ func GetAllUsers(ctx *gin.Context) {
 	
 	users := m.FindAllUser(queryName)
 	
-
 	if len(users) == 0 {
 		ctx.JSON(http.StatusInternalServerError, models.Response{
 			Success: false,
 			Message: "data not found",
-			Results: nil,
-			Errors:  nil,
 		})
 		return
 	}

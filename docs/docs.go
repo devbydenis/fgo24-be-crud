@@ -17,11 +17,6 @@ const docTemplate = `{
     "paths": {
         "/users": {
             "get": {
-                "security": [
-                    {
-                        "Token": []
-                    }
-                ],
                 "description": "list all users",
                 "consumes": [
                     "application/json"
@@ -94,6 +89,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "Token": []
+                    }
+                ],
                 "description": "Delete user by user ID",
                 "consumes": [
                     "application/json"
