@@ -1,8 +1,9 @@
 package controllers
 
 import (
-	"be_crud/models"
 	m "be_crud/models"
+	u "be_crud/utils"
+	"context"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -27,14 +28,14 @@ func GetAllUsers(ctx *gin.Context) {
 	users := m.FindAllUser(queryName)
 	
 	if len(users) == 0 {
-		ctx.JSON(http.StatusInternalServerError, models.Response{
+		ctx.JSON(http.StatusInternalServerError, m.Response{
 			Success: false,
 			Message: "data not found",
 		})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, models.Response{
+	ctx.JSON(http.StatusOK, m.Response{
 		Success: true,
 		Message: "success get all users",
 		Results: users,
@@ -54,7 +55,7 @@ func GetUserById(ctx *gin.Context) {
 	id, _ := strconv.Atoi(ctx.Param("id"))
 	user := m.FindUserById(id)
 
-	ctx.JSON(http.StatusOK, models.Response{
+	ctx.JSON(http.StatusOK, m.Response{
 		Success: true,
 		Message: "success get user by id",
 		Results: user,
@@ -94,6 +95,7 @@ func CreateUser(ctx *gin.Context) {
 	}
 	
 	m.AddingNewUSer(req)
+	u.RedisConnect().Del(context.Background(), "users")
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "success create new user",
 		"result": req,
@@ -125,12 +127,9 @@ func UpdateUser(ctx *gin.Context) {
 		return
 	}
 
-	fmt.Println("id: ", req.ID)
-	fmt.Println("email: ", req.Email)
-	fmt.Println("name: ", req.Name)
 	m.UpdateUser(&req)
-
-	// update kalo sukses
+	u.RedisConnect().Del(context.Background(), "users")
+	
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "success update user",
 		"result": req,
@@ -161,6 +160,8 @@ func DeleteUser(ctx *gin.Context) {
 	}
 
 	m.DeleteUser(req.ID)
+	u.RedisConnect().Del(context.Background(), "users")
+
 	ctx.JSON(http.StatusOK, m.Response{
 		Success: true,
 		Message: "success delete user",
