@@ -11,8 +11,16 @@ import (
 
 func ConnectDB() (*pgxpool.Conn, error) {
 	godotenv.Load()
-	
-	pool, err := pgxpool.New(context.Background(), os.Getenv("DATABASE_URL"))
+
+	host := os.Getenv("PGHOST")
+	port := os.Getenv("PGPORT")
+	user := os.Getenv("PGUSER")
+	password := os.Getenv("PGPASSWORD")
+	database := os.Getenv("PGDATABASE")
+
+	connectionString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", user, password, host, port, database)
+
+	pool, err := pgxpool.New(context.Background(), connectionString)
 	if err != nil {
 		fmt.Println("when creates new pool", err)
 	}

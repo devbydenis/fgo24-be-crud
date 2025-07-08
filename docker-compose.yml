@@ -1,0 +1,25 @@
+services:
+  app: 
+    build: .
+    ports:
+      - "8800:8800"
+    env_file:
+      - .env
+    networks:
+      - netapp
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=1
+    ports:
+      - 5442:5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+    networks:
+      - netapp
+
+volumes:
+  pg_data:
+networks:
+  netapp:
