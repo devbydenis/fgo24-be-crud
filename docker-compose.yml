@@ -1,8 +1,8 @@
 services:
   app: 
-    build: .
+    image: 
     ports:
-      - "8800:8800"
+      - "9803:8800"
     env_file:
       - .env
     networks:
