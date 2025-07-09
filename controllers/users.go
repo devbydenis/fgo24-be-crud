@@ -36,7 +36,7 @@ func GetAllUsers(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, m.Response{
 		Success: true,
-		Message: "success get all users",
+		Message: "sukses bang!",
 		Results: users,
 	})
 }
